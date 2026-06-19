@@ -1,0 +1,862 @@
+/* ==========================================================================
+   CSS CUSTOM VARIABLES & COLOR PALETTE
+   ========================================================================== */
+:root {
+    --neon-cyan: #00f3ff;
+    --neon-cyan-glow: rgba(0, 243, 255, 0.4);
+    --neon-magenta: #ff007f;
+    --neon-magenta-glow: rgba(255, 0, 127, 0.4);
+    --neon-green: #39ff14;
+    --neon-green-glow: rgba(57, 255, 20, 0.4);
+    --neon-red: #ff3131;
+    --neon-red-glow: rgba(255, 49, 49, 0.4);
+    
+    --bg-dark: #060511;
+    --bg-panel: rgba(14, 11, 30, 0.65);
+    --bg-panel-border: rgba(255, 255, 255, 0.08);
+    --bg-panel-border-glow: rgba(0, 243, 255, 0.15);
+    
+    --font-cyber: 'Orbitron', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+}
+/* ==========================================================================
+   RESET & SYSTEM CONFIG
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    font-family: var(--font-body);
+    color: #e0e0f2;
+}
+/* Three.js Render canvas */
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+/* ==========================================================================
+   AMBIENT BACKGROUND EFFECTS (Vaporwave/Cyberpunk Theme)
+   ========================================================================== */
+.cyber-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(18, 16, 35, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 16, 35, 0.3) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center center;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.8;
+}
+.neon-vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 40%, rgba(3, 2, 8, 0.85) 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+/* ==========================================================================
+   UI LAYER LAYOUT
+   ========================================================================== */
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none; /* Let clicks pass through if nothing is active */
+}
+/* Menu Screens parent */
+.menu-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.05);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                visibility 0.4s, 
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 15;
+    padding: 20px;
+}
+.menu-screen.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    pointer-events: auto; /* Re-enable pointer events for menus */
+}
+/* HUD Panel parent */
+.hud-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    padding: 24px;
+    pointer-events: none;
+    z-index: 12;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s;
+}
+.hud-screen.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+/* ==========================================================================
+   PREMIUM GLASSMORPHISM PANELS
+   ========================================================================== */
+.glass-panel {
+    background: var(--bg-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--bg-panel-border);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+.glass-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.03),
+        transparent
+    );
+    transform: rotate(30deg);
+    pointer-events: none;
+}
+/* ==========================================================================
+   LOGO & BRANDING (CYBER GLITCH)
+   ========================================================================== */
+.logo-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+h1.glitch {
+    font-family: var(--font-cyber);
+    font-size: 5rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: #fff;
+    position: relative;
+    text-shadow: 
+        0 0 10px var(--neon-cyan-glow),
+        0 0 30px var(--neon-cyan-glow);
+    animation: text-breathe 3s infinite ease-in-out;
+}
+.subtitle {
+    font-family: var(--font-cyber);
+    font-size: 0.95rem;
+    letter-spacing: 8px;
+    color: var(--neon-cyan);
+    margin-top: 5px;
+    text-shadow: 0 0 8px var(--neon-cyan-glow);
+    font-weight: 600;
+}
+/* ==========================================================================
+   CARDS & ALIGNMENT
+   ========================================================================== */
+.menu-card {
+    width: 100%;
+    max-width: 480px;
+    border-top: 3px solid var(--neon-cyan);
+}
+.menu-card.wide-card {
+    max-width: 580px;
+    border-top: 3px solid var(--neon-magenta);
+}
+.text-center {
+    text-align: center;
+}
+.margin-top {
+    margin-top: 24px;
+}
+.menu-desc {
+    font-size: 0.95rem;
+    color: #a0a0c0;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+/* High Score Badge */
+.high-score-badge {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.badge-label {
+    font-family: var(--font-cyber);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #8080a0;
+    margin-bottom: 4px;
+}
+.badge-value {
+    font-family: var(--font-cyber);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green-glow);
+}
+/* ==========================================================================
+   BUTTONS (Futuristic Neon Controls)
+   ========================================================================== */
+.btn {
+    font-family: var(--font-cyber);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 12px;
+    transition: transform 0.2s ease;
+}
+/* Primary Button (Neon Cyan) */
+.btn-primary {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+}
+.btn-primary:hover {
+    background: #ffffff;
+    box-shadow: 
+        0 0 25px var(--neon-cyan),
+        0 0 50px var(--neon-cyan-glow);
+}
+.btn-primary:hover .btn-icon {
+    transform: translateX(4px);
+}
+/* Secondary Button */
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
+}
+/* Danger Button (Red) */
+.btn-danger {
+    background: rgba(255, 49, 49, 0.15);
+    color: #fff;
+    border: 1px solid var(--neon-red);
+}
+.btn-danger:hover {
+    background: var(--neon-red);
+    color: #fff;
+    box-shadow: 0 0 20px var(--neon-red-glow);
+}
+/* Button Layout utilities */
+.menu-actions {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.menu-actions.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 0;
+}
+/* Toggle Switch button */
+.btn-toggle {
+    font-family: var(--font-cyber);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8080a0;
+    font-size: 0.85rem;
+    padding: 10px 16px;
+    width: auto;
+    border-radius: 8px;
+}
+.btn-toggle.active {
+    background: rgba(57, 255, 20, 0.15);
+    border-color: var(--neon-green);
+    color: var(--neon-green);
+    box-shadow: inset 0 0 8px rgba(57, 255, 20, 0.1);
+}
+/* ==========================================================================
+   DIFFICULTY & QUALITY SELECTORS
+   ========================================================================== */
+.section-title {
+    font-family: var(--font-cyber);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: #8080a0;
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.difficulty-selector, .graphics-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.diff-btn, .quality-btn {
+    font-family: var(--font-cyber);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    color: #606080;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.diff-btn:hover, .quality-btn:hover {
+    color: #fff;
+}
+.diff-btn.active {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 4px 12px var(--neon-cyan-glow);
+}
+.quality-btn.active {
+    background: var(--neon-magenta);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--neon-magenta-glow);
+}
+/* ==========================================================================
+   KEYBOARD/CONTROL HELP SCREEN
+   ========================================================================== */
+.control-help {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 20px;
+    padding: 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.help-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.85rem;
+}
+.keys {
+    font-family: var(--font-cyber);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    padding: 4px 10px;
+    margin-right: 4px;
+    font-weight: 700;
+    color: #fff;
+    display: inline-block;
+}
+.help-desc {
+    color: #8080a0;
+    font-family: var(--font-cyber);
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+.gamepad-indicator {
+    justify-content: center;
+    gap: 10px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.05);
+    padding-top: 10px;
+    margin-top: 2px;
+}
+.gp-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--neon-green);
+    animation: pulse-glow 2s infinite ease-in-out;
+}
+/* ==========================================================================
+   HUD SYSTEM OVERLAYS (Gameplay overlay)
+   ========================================================================== */
+.hud-left, .hud-right {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    pointer-events: auto;
+}
+.hud-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+.hud-stat-box {
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px;
+}
+.hud-stat-box.small-stat {
+    min-height: 60px;
+    padding: 10px 20px;
+}
+.hud-label {
+    font-family: var(--font-cyber);
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    color: #8080a0;
+    margin-bottom: 4px;
+}
+.hud-value {
+    font-family: var(--font-cyber);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+/* Multiplier dynamic combo bar */
+.hud-multiplier-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+}
+.multiplier-bar-outer {
+    flex-grow: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 3px;
+}
+.multiplier-bar-inner {
+    width: 100%;
+    height: 100%;
+    background: var(--neon-magenta);
+    box-shadow: 0 0 8px var(--neon-magenta);
+    border-radius: 4px;
+    transform-origin: left center;
+    transform: scaleX(0); /* Driven dynamically by score script */
+    transition: transform 0.1s linear;
+}
+/* Center HUD Score */
+.score-display {
+    padding: 14px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.hud-label-center {
+    font-family: var(--font-cyber);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #8080a0;
+    margin-bottom: 2px;
+}
+.hud-score-value {
+    font-family: var(--font-cyber);
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.2),
+        0 0 30px var(--neon-cyan-glow);
+}
+/* Pause Circle Button in HUD */
+.btn-pause-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-panel);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    align-self: flex-end;
+    backdrop-filter: blur(12px);
+    transition: all 0.2s ease;
+}
+.btn-pause-circle:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px var(--neon-cyan-glow);
+    transform: scale(1.05);
+}
+/* ==========================================================================
+   DYNAMIC ALERT POPUPS (Combo & Milestones)
+   ========================================================================== */
+.alerts-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+}
+.alert-pill {
+    background: rgba(14, 11, 30, 0.85);
+    border: 1px solid var(--neon-cyan);
+    border-radius: 30px;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+    animation: alert-slide-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.alert-pill.magenta {
+    border-color: var(--neon-magenta);
+}
+.alert-pill.green {
+    border-color: var(--neon-green);
+}
+.alert-text {
+    font-family: var(--font-cyber);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+/* ==========================================================================
+   SETTINGS PANEL SPECIFICS
+   ========================================================================== */
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+.setting-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 65%;
+}
+.setting-label .title {
+    font-family: var(--font-cyber);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+}
+.setting-label .desc {
+    font-size: 0.75rem;
+    color: #707090;
+    line-height: 1.4;
+}
+/* ==========================================================================
+   GAME OVER DETAILS & RECORD POPUPS
+   ========================================================================== */
+.glitch-red {
+    font-family: var(--font-cyber);
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 
+        0 0 10px var(--neon-red),
+        0 0 30px var(--neon-red-glow);
+}
+.score-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+.summary-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+}
+.box-label {
+    font-family: var(--font-cyber);
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    color: #8080a0;
+    margin-bottom: 6px;
+}
+.box-val {
+    font-family: var(--font-cyber);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+/* Record dynamic pulsing lock notification */
+.high-score-notif {
+    position: relative;
+    background: rgba(57, 255, 20, 0.1);
+    border: 1px solid var(--neon-green);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+.record-text {
+    font-family: var(--font-cyber);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    letter-spacing: 1px;
+    z-index: 5;
+    position: relative;
+    text-shadow: 0 0 5px var(--neon-green-glow);
+}
+.pulsing-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(57, 255, 20, 0.08);
+    animation: overlay-pulse 1.5s infinite ease-in-out;
+}
+/* ==========================================================================
+   MOBILE CONTROLS OVERLAY (Soft UI Touch Boundaries)
+   ========================================================================== */
+.mobile-steer-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    pointer-events: auto; /* Allow touch in hud overlay */
+    z-index: -1; /* Place below active buttons but above game */
+}
+.mobile-steer-zone {
+    width: 50%;
+    height: 100%;
+    pointer-events: auto;
+}
+/* ==========================================================================
+   NEON COLOR UTILITIES
+   ========================================================================== */
+.neon-text-cyan {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px var(--neon-cyan-glow);
+}
+.neon-text-magenta {
+    color: var(--neon-magenta);
+    text-shadow: 0 0 8px var(--neon-magenta-glow);
+}
+.neon-text-green {
+    color: var(--neon-green);
+    text-shadow: 0 0 8px var(--neon-green-glow);
+}
+.neon-text-red {
+    color: var(--neon-red);
+    text-shadow: 0 0 8px var(--neon-red-glow);
+}
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+@keyframes text-breathe {
+    0%, 100% {
+        text-shadow: 
+            0 0 10px var(--neon-cyan-glow),
+            0 0 25px var(--neon-cyan-glow);
+    }
+    50% {
+        text-shadow: 
+            0 0 16px var(--neon-cyan-glow),
+            0 0 45px var(--neon-cyan-glow),
+            0 0 55px var(--neon-cyan);
+    }
+}
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 0.5;
+        filter: drop-shadow(0 0 0px var(--neon-green-glow));
+    }
+    50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 5px var(--neon-green));
+    }
+}
+@keyframes overlay-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+@keyframes alert-slide-in {
+    0% {
+        transform: translateY(-20px) scale(0.9);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+/* ==========================================================================
+   RESPONSIVE DESIGN ADAPTABILITY
+   ========================================================================== */
+@media (max-width: 900px) {
+    .hud-screen {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 12px;
+        padding: 16px;
+    }
+    
+    .hud-left {
+        grid-column: 1;
+        grid-row: 1;
+    }
+    
+    .hud-right {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    
+    .hud-center {
+        grid-column: 1 / span 2;
+        grid-row: 2;
+        width: 100%;
+    }
+    
+    .score-display {
+        width: 100%;
+        padding: 10px;
+    }
+}
+@media (max-width: 600px) {
+    h1.glitch {
+        font-size: 3.2rem;
+        letter-spacing: 4px;
+    }
+    
+    .subtitle {
+        font-size: 0.75rem;
+        letter-spacing: 4px;
+    }
+    
+    .menu-card {
+        padding: 20px;
+    }
+    
+    .hud-screen {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 8px;
+    }
+    
+    .hud-left {
+        grid-column: 1;
+        grid-row: 1;
+        flex-direction: row;
+    }
+    
+    .hud-right {
+        grid-column: 1;
+        grid-row: 2;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .hud-center {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    
+    .hud-stat-box {
+        min-height: 55px;
+        padding: 6px 12px;
+        flex: 1;
+    }
+    
+    .hud-stat-box.small-stat {
+        display: none; /* Hide speed on super narrow devices to save space */
+    }
+    
+    .btn-pause-circle {
+        width: 44px;
+        height: 44px;
+        align-self: center;
+    }
+    
+    .setting-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .setting-label {
+        max-width: 100%;
+    }
+    
+    .setting-control {
+        width: 100%;
+    }
+    
+    .btn-toggle {
+        width: 100%;
+    }
+}
